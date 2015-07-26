@@ -1,0 +1,22 @@
+---
+layout: post
+title: hive行转列
+---
+
+分享一个小技巧：
+hive能够将一行数据拆成多行数据，在此基础上可以对拆分后的数据进行聚合，这个功能有时候会很有用，比如现有一份数据是订单feature上key的集合，每行是一个订单上feature所有的key，现在需要得到订单上所有在使用的key的集合，原始数据如下（表名keytable,只有一列，列名col）：
+a,b,c
+d,
+a,e
+b,c
+e,f
+希望处理之后的值是
+a
+b
+c
+d
+e
+f
+对应的hive语句如下
+select distinct key  from keytable
+lateral view explode(split(col,',')) mytable  as key
